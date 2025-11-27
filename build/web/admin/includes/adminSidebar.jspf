@@ -1,0 +1,57 @@
+
+<!-- ADMIN SIDEBAR -->
+
+<div class="sidebar">
+    <h4 class="text-center mb-4">
+        <i class="bi bi-speedometer2"></i> Admin Panel
+    </h4>
+
+    <ul class="nav flex-column">
+
+        <li class="nav-item">
+            <a href="dashboard.jsp" class="nav-link">
+                <i class="bi bi-house-door"></i> Dashboard
+            </a>
+        </li>
+
+        <li class="nav-item">
+            <a href="services.jsp" class="nav-link">
+                <i class="bi bi-list-check"></i> Services
+            </a>
+        </li>
+
+        <li class="nav-item">
+            <a href="subscriptions.jsp" class="nav-link">
+                <i class="bi bi-card-list"></i> Subscriptions
+            </a>
+        </li>
+
+        <!-- Billing Dropdown Hover -->
+        <li class="nav-item dropdown">
+            <a class="nav-link" href="#">
+                <i class="bi bi-cash-stack"></i> Billing History
+            </a>
+
+            <ul class="dropdown-menu billing-submenu">
+                <li>
+                    <a class="billing-item" href="unpaidBills.jsp">
+                        <i class="bi bi-x-circle-fill text-danger"></i> Unpaid Bills
+                    </a>
+                </li>
+                <li>
+                    <a class="billing-item" href="paidBills.jsp">
+                        <i class="bi bi-check-circle-fill text-success"></i> Paid Bills
+                    </a>
+                </li>
+            </ul>
+        </li>
+
+
+        <li class="nav-item">
+            <a href="../logout" class="nav-link text-warning">
+                <i class="bi bi-box-arrow-right"></i> Logout
+            </a>
+        </li>
+
+    </ul>
+</div>
