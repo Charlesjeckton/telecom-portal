@@ -17,7 +17,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Add Subscription</title>
+        <title>Add Subscription - Admin Panel</title>
 
         <style>
             .main-content {

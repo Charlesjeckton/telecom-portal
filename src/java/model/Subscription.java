@@ -1,5 +1,7 @@
 package model;
 
+import java.util.Date;
+
 public class Subscription {
 
     private int id;
@@ -11,15 +13,18 @@ public class Subscription {
     private String serviceName;
 
     // Correct database fields
-    private java.util.Date purchaseDate;   // maps to subscriptions.purchase_date
-    private java.util.Date expiryDate;     // maps to subscriptions.expiry_date (nullable)
+    private Date purchaseDate;   // maps to subscriptions.purchase_date
+    private Date expiryDate;     // maps to subscriptions.expiry_date (nullable)
 
     private String status;
+
+    // NEW FIELD (Fixes "cannot find symbol setMonthlyPrice")
+    private double monthlyPrice;
 
     // ===== Constructors =====
     public Subscription() {}
 
-    public Subscription(int customerId, int serviceId, java.util.Date purchaseDate, java.util.Date expiryDate, String status) {
+    public Subscription(int customerId, int serviceId, Date purchaseDate, Date expiryDate, String status) {
         this.customerId = customerId;
         this.serviceId = serviceId;
         this.purchaseDate = purchaseDate;
@@ -27,7 +32,7 @@ public class Subscription {
         this.status = status;
     }
 
-    public Subscription(int customerId, int serviceId, java.util.Date purchaseDate, String status) {
+    public Subscription(int customerId, int serviceId, Date purchaseDate, String status) {
         this(customerId, serviceId, purchaseDate, null, status);
     }
 
@@ -47,14 +52,23 @@ public class Subscription {
     public String getServiceName() { return serviceName; }
     public void setServiceName(String serviceName) { this.serviceName = serviceName; }
 
-    public java.util.Date getPurchaseDate() { return purchaseDate; }
-    public void setPurchaseDate(java.util.Date purchaseDate) { this.purchaseDate = purchaseDate; }
+    public Date getPurchaseDate() { return purchaseDate; }
+    public void setPurchaseDate(Date purchaseDate) { this.purchaseDate = purchaseDate; }
 
-    public java.util.Date getExpiryDate() { return expiryDate; }
-    public void setExpiryDate(java.util.Date expiryDate) { this.expiryDate = expiryDate; }
+    public Date getExpiryDate() { return expiryDate; }
+    public void setExpiryDate(Date expiryDate) { this.expiryDate = expiryDate; }
 
     public String getStatus() { return status; }
     public void setStatus(String status) { this.status = status; }
+
+    // ===== NEW GETTER & SETTER FOR monthlyPrice =====
+    public double getMonthlyPrice() {
+        return monthlyPrice;
+    }
+
+    public void setMonthlyPrice(double monthlyPrice) {
+        this.monthlyPrice = monthlyPrice;
+    }
 
     @Override
     public String toString() {
@@ -67,6 +81,7 @@ public class Subscription {
                 ", purchaseDate=" + purchaseDate +
                 ", expiryDate=" + expiryDate +
                 ", status='" + status + '\'' +
+                ", monthlyPrice=" + monthlyPrice +
                 '}';
     }
 }

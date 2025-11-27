@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
 
-@WebServlet("/subscription")
+@WebServlet("/admin/subscription")
 public class AdminSubscriptionServlet extends HttpServlet {
 
     @Override

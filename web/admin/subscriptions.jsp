@@ -4,6 +4,7 @@
 <%@ include file="includes/adminTheme.jspf" %>
 <%@ include file="includes/adminSidebar.jspf" %>
 
+
 <%@ page import="java.util.*" %>
 <%@ page import="dao.SubscriptionDAO" %>
 <%@ page import="dao.CustomerDAO" %>
@@ -15,7 +16,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Admin • Subscription Management</title>
+        <title>Subscription Management - Admin Panel</title>
 
         <style>
             .main-content {
@@ -34,19 +35,11 @@
         <div class="main-content">
 
             <div class="d-flex justify-content-between align-items-center mb-4">
-                <h2 class="fw-bold">Subscription Management</h2>
-                <a href="addSubscription.jsp" class="btn btn-primary">+ Add New Subscription</a>
+                <h2 class="fw-bold">All Subscription</h2>
+                <a href="addSubscription.jsp" class="btn btn-primary">+ Add New</a>
             </div>
 
-            <!-- GLOBAL ALERTS -->
-            <c:if test="${not empty message}">
-                <div class="alert alert-${messageType eq 'success' ? 'success' : 'danger'} alert-dismissible fade show">
-                    <strong>${messageType eq 'success' ? 'Success:' : 'Error:'}</strong>
-                    ${message}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                </div>
-            </c:if>
-
+            <%@ include file="includes/alerts.jspf" %>
             <%
                 SubscriptionDAO subDao = new SubscriptionDAO();
                 CustomerDAO custDao = new CustomerDAO();
@@ -69,7 +62,6 @@
                                 <th>Purchase Date</th>
                                 <th>Expiry Date</th>
                                 <th>Status</th>
-                                <th style="width:160px;">Actions</th>
                             </tr>
                         </thead>
 
@@ -110,12 +102,6 @@
                                     </span>
                                 </td>
 
-                                <!-- ACTION BUTTONS -->
-                                <td class="table-actions">
-                                    <a href="editSubscription.jsp?id=<%= s.getId()%>" class="btn btn-warning btn-sm">
-                                        Edit
-                                    </a>
-                                </td>
                             </tr>
 
                             <%

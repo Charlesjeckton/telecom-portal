@@ -33,7 +33,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Edit Service</title>
+    <title>Edit Service - Admin Panel</title>
 
     <style>
         .main-content {

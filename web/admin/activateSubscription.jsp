@@ -28,7 +28,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Activate Subscription</title>
+    <title>Activate Subscription - Admin Panel</title>
 </head>
 <body>
 

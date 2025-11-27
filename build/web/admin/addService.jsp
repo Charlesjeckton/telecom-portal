@@ -5,7 +5,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Add New Service</title>
+    <title>Add New Service - Admin Panel</title>
 
     <style>
         .main-content {

@@ -9,28 +9,39 @@ import java.io.IOException;
 
 @WebServlet("/admin/markBillUnpaid")
 public class MarkBillUnpaidServlet extends HttpServlet {
-
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws IOException, ServletException {
 
-        String idParam = request.getParameter("billId");
+        // Accept either "id" or "billId"
+        String idParam = request.getParameter("id");
+        if (idParam == null || idParam.trim().isEmpty()) {
+            idParam = request.getParameter("billId");
+        }
+
+        String tab = request.getParameter("tab");
+        if (tab == null || tab.trim().isEmpty()) tab = "paid"; // default
 
         if (idParam == null || idParam.trim().isEmpty()) {
-            response.sendRedirect("paidBills.jsp?error=Invalid+Bill+ID");
+            response.sendRedirect(request.getContextPath() + "/admin/billing.jsp?tab=" + tab + "&error=Invalid+Bill+ID");
             return;
         }
 
-        int billId = Integer.parseInt(idParam);
+        int billId;
+        try {
+            billId = Integer.parseInt(idParam);
+        } catch (NumberFormatException e) {
+            response.sendRedirect(request.getContextPath() + "/admin/billing.jsp?tab=" + tab + "&error=Invalid+Bill+ID");
+            return;
+        }
 
         BillingDAO dao = new BillingDAO();
-
-        boolean ok = dao.markBillAsUnpaid(billId); // You will add this method below
+        boolean ok = dao.markBillAsUnpaid(billId);
 
         if (ok) {
-            response.sendRedirect("paidBills.jsp?success=Bill+Marked+as+Unpaid");
+            response.sendRedirect(request.getContextPath() + "/admin/billing.jsp?tab=" + tab + "&success=Bill+Marked+as+Unpaid");
         } else {
-            response.sendRedirect("paidBills.jsp?error=Failed+to+update+bill");
+            response.sendRedirect(request.getContextPath() + "/admin/billing.jsp?tab=" + tab + "&error=Failed+to+update+bill");
         }
     }
 }

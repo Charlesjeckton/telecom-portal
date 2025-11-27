@@ -165,6 +165,10 @@
         </button>
     </form>
 
+    
+    <div class="footer-note">
+        <a href="registerCustomer.jsp">Register as a customer</a>
+    </div>
     <div class="footer-note">
         © 2025 Telecom Management System
     </div>

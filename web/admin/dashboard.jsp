@@ -6,6 +6,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <title>Dashboard - Admin Panel</title>
 </head>
 <body>
 
@@ -13,6 +14,15 @@
     <h2>Welcome Admin 👋</h2>
 
     <div class="row">
+        <div class="col-md-4 mb-4">
+            <div class="card dashboard-card shadow-sm">
+                <div class="card-body">
+                    <h5><i class="bi bi-people"></i> Customers</h5>
+                    <p>Manage customers</p>
+                    <a href="customers.jsp" class="btn btn-primary">View Customers</a>
+                </div>
+            </div>
+        </div>
 
         <div class="col-md-4 mb-4">
             <div class="card dashboard-card shadow-sm">
@@ -39,8 +49,16 @@
                 <div class="card-body">
                     <h5><i class="bi bi-cash-stack"></i> Billing History</h5>
                     <p>Review billing history</p>
-                    <a href="unpaidBills.jsp" class="btn btn-primary">Paid Bills</a>
-                    <a href="paidBills.jsp" class="btn btn-primary">Unpaid Bills</a>
+                    <a href="billing.jsp" class="btn btn-primary">View Billing</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="card dashboard-card shadow-sm">
+                <div class="card-body">
+                    <h5><i class="bi bi-graph-up"></i> Report</h5>
+                    <p>Review report</p>
+                    <a href="reports.jsp" class="btn btn-primary">View Report</a>
                 </div>
             </div>
         </div>
