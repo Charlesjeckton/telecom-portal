@@ -1,108 +1,138 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html>
 <head>
     <title>Register Customer</title>
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- PrimeIcons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/primeicons@5.0.0/primeicons.css" />
+
     <style>
         body {
-            font-family: Arial, sans-serif;
-            background-color: #f9f9f9;
             margin: 0;
-            padding: 0;
-        }
-        .container {
-            width: 400px;
-            margin: 50px auto;
-            padding: 30px;
-            background-color: #ffffff;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-        }
-        h2 {
-            text-align: center;
-            color: #333333;
-        }
-        form {
+            min-height: 100vh;
             display: flex;
-            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #4e2fbf, #1a94e8);
+            font-family: "Poppins", sans-serif;
         }
-        label {
-            margin-bottom: 5px;
-            font-weight: bold;
+
+        .register-wrapper {
+            width: 100%;
+            max-width: 420px;
+            padding: 28px 22px;
+            background: #fff;
+            border-radius: 18px;
+            box-shadow: 0 14px 32px rgba(0, 0, 0, 0.22);
+            animation: fadeIn 0.7s ease-out;
         }
-        input[type="text"], 
-        input[type="email"], 
-        input[type="password"] {
-            padding: 8px;
-            margin-bottom: 15px;
-            border: 1px solid #cccccc;
-            border-radius: 5px;
-            font-size: 14px;
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(25px); }
+            to   { opacity: 1; transform: translateY(0); }
         }
+
+        .input-group-text {
+            background: #f3f3f3;
+            border-right: none;
+        }
+
+        .form-control {
+            border-left: none;
+            background: #f3f3f3;
+        }
+
+        .form-control:focus {
+            background: #fff;
+            border-color: #1a94e8;
+            box-shadow: 0 0 4px rgba(26,148,232,0.4);
+        }
+
         button {
-            padding: 10px;
-            background-color: #4CAF50;
-            color: white;
+            background: linear-gradient(135deg, #1a94e8, #6b1fc7);
             border: none;
-            border-radius: 5px;
-            font-size: 16px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
         }
+
         button:hover {
-            background-color: #45a049;
-        }
-        .message {
-            text-align: center;
-            margin-bottom: 15px;
-            font-weight: bold;
-        }
-        .message.success { color: green; }
-        .message.error { color: red; }
-        a {
-            display: block;
-            text-align: center;
-            margin-top: 15px;
-            color: #3333cc;
-            text-decoration: none;
-        }
-        a:hover {
-            text-decoration: underline;
+            opacity: 0.92;
         }
     </style>
 </head>
+
 <body>
 
-<div class="container">
-    <h2>Register New Customer</h2>
+<div class="register-wrapper">
 
-    <!-- Display success/error message -->
-    <c:if test="${not empty message}">
-        <div class="message ${messageType}">${message}</div>
+    <h4 class="text-center fw-bold mb-3">Telecom System Register</h4>
+
+    <!-- Success Message -->
+    <c:if test="${not empty param.success}">
+        <div class="alert alert-success d-flex align-items-center">
+            <i class="pi pi-check-circle me-2"></i> ${param.success}
+        </div>
     </c:if>
 
-    <form action="registerCustomer" method="post">
-        <label for="name">Full Name:</label>
-        <input type="text" id="name" name="name" placeholder="Enter full name" required>
+    <!-- Error Message -->
+    <c:if test="${not empty param.error}">
+        <div class="alert alert-danger d-flex align-items-center">
+            <i class="pi pi-exclamation-triangle me-2"></i> ${param.error}
+        </div>
+    </c:if>
 
-        <label for="phone">Phone Number:</label>
-        <input type="text" id="phone" name="phone" placeholder="Enter phone number" required>
+    <form action="${pageContext.request.contextPath}/registerCustomer" method="post">
 
-        <label for="email">Email Address:</label>
-        <input type="email" id="email" name="email" placeholder="Enter email address" required>
+        <!-- Full Name -->
+        <div class="input-group mb-3">
+            <span class="input-group-text"><i class="pi pi-user"></i></span>
+            <input type="text" name="name" class="form-control" placeholder="Full Name" required>
+        </div>
 
-        <label for="username">Username:</label>
-        <input type="text" id="username" name="username" placeholder="Choose a username" required>
+        <!-- Phone Number -->
+        <div class="input-group mb-3">
+            <span class="input-group-text"><i class="pi pi-phone"></i></span>
+            <input type="text" name="phone" class="form-control" placeholder="Phone Number" required>
+        </div>
 
-        <label for="password">Password:</label>
-        <input type="password" id="password" name="password" placeholder="Enter password" required>
+        <!-- Email -->
+        <div class="input-group mb-3">
+            <span class="input-group-text"><i class="pi pi-envelope"></i></span>
+            <input type="email" name="email" class="form-control" placeholder="Email Address" required>
+        </div>
 
-        <button type="submit">Register</button>
+        <!-- Username -->
+        <div class="input-group mb-3">
+            <span class="input-group-text"><i class="pi pi-user-edit"></i></span>
+            <input type="text" name="username" class="form-control" placeholder="Choose Username" required>
+        </div>
+
+        <!-- Password -->
+        <div class="input-group mb-3">
+            <span class="input-group-text"><i class="pi pi-lock"></i></span>
+            <input type="password" name="password" class="form-control" placeholder="Create Password" required>
+        </div>
+
+        <button type="submit" class="btn btn-primary w-100 py-2">
+            <i class="pi pi-user-plus"></i> Register
+        </button>
     </form>
 
+    <div class="text-center mt-3">
+        Already have an account?
+        <a href="login.jsp">Login</a>
+    </div>
+
+    <p class="text-center mt-2 text-muted" style="font-size: 13px;">
+        © 2025 Telecom Management System
+    </p>
 </div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
 </body>
 </html>

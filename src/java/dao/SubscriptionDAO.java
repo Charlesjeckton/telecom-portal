@@ -22,67 +22,29 @@ public class SubscriptionDAO {
             stmt.setInt(1, userId);
             ResultSet rs = stmt.executeQuery();
 
-            if (rs.next()) return rs.getInt("id");
+            if (rs.next()) {
+                return rs.getInt("id");
+            }
 
         } catch (SQLException e) {
             System.err.println("ERROR getCustomerIdByUserId: " + e.getMessage());
         }
         return 0;
     }
-public List<Subscription> getActiveSubscriptionsByCustomer(int customerId) {
-    List<Subscription> list = new ArrayList<>();
 
-    String sql = "SELECT s.*, c.name AS customerName, sv.name AS serviceName " +
-                 "FROM subscriptions s " +
-                 "JOIN customers c ON s.customer_id = c.id " +
-                 "JOIN services sv ON s.service_id = sv.id " +
-                 "WHERE s.customer_id = ? AND s.status = 'ACTIVE'";
-
-    try (Connection conn = DBConnectionManager.getConnection();
-         PreparedStatement stmt = conn.prepareStatement(sql)) {
-
-        stmt.setInt(1, customerId);
-        ResultSet rs = stmt.executeQuery();
-
-        while (rs.next()) {
-            Subscription sub = new Subscription();
-            sub.setId(rs.getInt("id"));
-            sub.setCustomerId(rs.getInt("customer_id"));
-            sub.setServiceId(rs.getInt("service_id"));
-
-            sub.setCustomerName(rs.getString("customerName"));
-            sub.setServiceName(rs.getString("serviceName"));
-
-            // Convert SQL Date → util.Date
-            java.sql.Date pDate = rs.getDate("purchase_date");
-            java.sql.Date eDate = rs.getDate("expiry_date");
-
-            if (pDate != null) sub.setPurchaseDate(new java.util.Date(pDate.getTime()));
-            if (eDate != null) sub.setExpiryDate(new java.util.Date(eDate.getTime()));
-
-            sub.setStatus(rs.getString("status"));
-
-            list.add(sub);
-        }
-
-    } catch (Exception e) {
-        e.printStackTrace();
-    }
-
-    return list;
-}
 
     // =====================================================
-    // GET SUBSCRIPTIONS BY CUSTOMER ID
+    // GET ACTIVE SUBSCRIPTIONS BY CUSTOMER
     // =====================================================
-    public List<Subscription> getSubscriptionsByCustomerId(int customerId) {
+    public List<Subscription> getActiveSubscriptionsByCustomer(int customerId) {
         List<Subscription> list = new ArrayList<>();
 
-        String sql = "SELECT s.*, srv.name AS service_name, srv.price AS service_price " +
-                "FROM subscriptions s " +
-                "JOIN services srv ON s.service_id = srv.id " +
-                "WHERE s.customer_id = ? " +
-                "ORDER BY s.id DESC";
+        String sql = "SELECT s.*, c.name AS customerName, sv.name AS serviceName "
+                + "FROM subscriptions s "
+                + "JOIN customers c ON s.customer_id = c.id "
+                + "JOIN services sv ON s.service_id = sv.id "
+                + "WHERE s.customer_id = ? AND s.status = 'ACTIVE' "
+                + "ORDER BY s.id DESC";
 
         try (Connection conn = DBConnectionManager.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -91,46 +53,106 @@ public List<Subscription> getActiveSubscriptionsByCustomer(int customerId) {
             ResultSet rs = stmt.executeQuery();
 
             while (rs.next()) {
-                Subscription s = new Subscription();
+                Subscription sub = new Subscription();
 
-                s.setId(rs.getInt("id"));
-                s.setCustomerId(rs.getInt("customer_id"));
-                s.setServiceId(rs.getInt("service_id"));
-                s.setServiceName(rs.getString("service_name"));
-                s.setMonthlyPrice(rs.getDouble("service_price"));
+                sub.setId(rs.getInt("id"));
+                sub.setCustomerId(rs.getInt("customer_id"));
+                sub.setServiceId(rs.getInt("service_id"));
+                sub.setCustomerName(rs.getString("customerName"));
+                sub.setServiceName(rs.getString("serviceName"));
 
-                s.setPurchaseDate(rs.getTimestamp("purchase_date"));
-                s.setExpiryDate(rs.getTimestamp("expiry_date"));
-                s.setStatus(rs.getString("status"));
+                Timestamp pTs = rs.getTimestamp("purchase_date");
+                Timestamp eTs = rs.getTimestamp("expiry_date");
 
-                list.add(s);
+                sub.setPurchaseDate(pTs != null ? new Date(pTs.getTime()) : null);
+                sub.setExpiryDate(eTs != null ? new Date(eTs.getTime()) : null);
+
+                sub.setStatus(rs.getString("status"));
+
+                list.add(sub);
             }
 
-        } catch (SQLException e) {
-            System.err.println("ERROR getSubscriptionsByCustomerId: " + e.getMessage());
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+
         return list;
     }
+
+
+    // =====================================================
+    // GET ALL SUBSCRIPTIONS FOR CUSTOMER
+    // =====================================================
+   public List<Subscription> getSubscriptionsByCustomerId(int customerId) {
+    List<Subscription> list = new ArrayList<>();
+
+    String sql = "SELECT s.id, s.customer_id, s.service_id, "
+            + "s.purchase_date, s.expiry_date, s.status, "
+            + "c.name AS customer_name, "
+            + "srv.name AS service_name, srv.charge AS service_price "
+            + "FROM subscriptions s "
+            + "JOIN customers c ON s.customer_id = c.id "
+            + "JOIN services srv ON s.service_id = srv.id "
+            + "WHERE s.customer_id = ? "
+            + "ORDER BY s.id DESC";
+
+    try (Connection conn = DBConnectionManager.getConnection();
+         PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+        stmt.setInt(1, customerId);
+        ResultSet rs = stmt.executeQuery();
+
+        while (rs.next()) {
+            Subscription s = new Subscription();
+
+            s.setId(rs.getInt("id"));
+            s.setCustomerId(rs.getInt("customer_id"));
+            s.setServiceId(rs.getInt("service_id"));
+
+            s.setCustomerName(rs.getString("customer_name"));
+            s.setServiceName(rs.getString("service_name"));
+            s.setMonthlyPrice(rs.getDouble("service_price")); // now correct!
+
+            Timestamp purchase = rs.getTimestamp("purchase_date");
+            Timestamp expiry = rs.getTimestamp("expiry_date");
+
+            s.setPurchaseDate(purchase != null ? new Date(purchase.getTime()) : null);
+            s.setExpiryDate(expiry != null ? new Date(expiry.getTime()) : null);
+
+            s.setStatus(rs.getString("status"));
+
+            list.add(s);
+        }
+
+    } catch (SQLException e) {
+        System.err.println("ERROR getSubscriptionsByCustomerId: " + e.getMessage());
+    }
+
+    return list;
+}
+
 
     // =====================================================
     // ADD SUBSCRIPTION
     // =====================================================
     public boolean addSubscription(Subscription s) {
-        String sql =
-                "INSERT INTO subscriptions (customer_id, service_id, purchase_date, expiry_date, status) " +
-                "VALUES (?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO subscriptions "
+                + "(customer_id, service_id, purchase_date, expiry_date, status) "
+                + "VALUES (?, ?, ?, ?, ?)";
 
         try (Connection conn = DBConnectionManager.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setInt(1, s.getCustomerId());
             stmt.setInt(2, s.getServiceId());
+
             stmt.setTimestamp(3, new Timestamp(s.getPurchaseDate().getTime()));
 
-            if (s.getExpiryDate() != null)
+            if (s.getExpiryDate() != null) {
                 stmt.setTimestamp(4, new Timestamp(s.getExpiryDate().getTime()));
-            else
+            } else {
                 stmt.setNull(4, Types.TIMESTAMP);
+            }
 
             stmt.setString(5, s.getStatus());
 
@@ -143,25 +165,27 @@ public List<Subscription> getActiveSubscriptionsByCustomer(int customerId) {
         return false;
     }
 
+
     // =====================================================
     // UPDATE SUBSCRIPTION
     // =====================================================
     public boolean updateSubscription(Subscription s) {
-        String sql =
-                "UPDATE subscriptions SET customer_id = ?, service_id = ?, " +
-                "purchase_date = ?, expiry_date = ?, status = ? WHERE id = ?";
+        String sql = "UPDATE subscriptions SET customer_id = ?, service_id = ?, purchase_date = ?, "
+                + "expiry_date = ?, status = ? WHERE id = ?";
 
         try (Connection conn = DBConnectionManager.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setInt(1, s.getCustomerId());
             stmt.setInt(2, s.getServiceId());
+
             stmt.setTimestamp(3, new Timestamp(s.getPurchaseDate().getTime()));
 
-            if (s.getExpiryDate() != null)
+            if (s.getExpiryDate() != null) {
                 stmt.setTimestamp(4, new Timestamp(s.getExpiryDate().getTime()));
-            else
+            } else {
                 stmt.setNull(4, Types.TIMESTAMP);
+            }
 
             stmt.setString(5, s.getStatus());
             stmt.setInt(6, s.getId());
@@ -175,11 +199,11 @@ public List<Subscription> getActiveSubscriptionsByCustomer(int customerId) {
         return false;
     }
 
+
     // =====================================================
     // ACTIVATE SUBSCRIPTION
     // =====================================================
     public boolean activateSubscription(int id, Date purchaseDate, Date expiryDate) {
-
         String sql = "UPDATE subscriptions SET purchase_date = ?, expiry_date = ?, status = 'ACTIVE' WHERE id = ?";
 
         try (Connection conn = DBConnectionManager.getConnection();
@@ -187,10 +211,11 @@ public List<Subscription> getActiveSubscriptionsByCustomer(int customerId) {
 
             stmt.setTimestamp(1, new Timestamp(purchaseDate.getTime()));
 
-            if (expiryDate != null)
+            if (expiryDate != null) {
                 stmt.setTimestamp(2, new Timestamp(expiryDate.getTime()));
-            else
+            } else {
                 stmt.setNull(2, Types.TIMESTAMP);
+            }
 
             stmt.setInt(3, id);
 
@@ -202,6 +227,7 @@ public List<Subscription> getActiveSubscriptionsByCustomer(int customerId) {
 
         return false;
     }
+
 
     // =====================================================
     // DEACTIVATE SUBSCRIPTION
@@ -222,58 +248,62 @@ public List<Subscription> getActiveSubscriptionsByCustomer(int customerId) {
         return false;
     }
 
+
     // =====================================================
     // GET ALL SUBSCRIPTIONS (ADMIN)
     // =====================================================
     public List<Subscription> getAllSubscriptions() {
-    List<Subscription> list = new ArrayList<>();
+        List<Subscription> list = new ArrayList<>();
 
-    String sql =
-        "SELECT s.id, s.customer_id, s.service_id, s.purchase_date, s.expiry_date, s.status, " +
-        "c.name AS customer_name, srv.name AS service_name " +
-        "FROM subscriptions s " +
-        "JOIN customers c ON s.customer_id = c.id " +
-        "JOIN services srv ON s.service_id = srv.id " +
-        "ORDER BY s.id DESC";
+        String sql = "SELECT s.id, s.customer_id, s.service_id, "
+                + "s.purchase_date, s.expiry_date, s.status, "
+                + "c.name AS customer_name, srv.name AS service_name "
+                + "FROM subscriptions s "
+                + "JOIN customers c ON s.customer_id = c.id "
+                + "JOIN services srv ON s.service_id = srv.id "
+                + "ORDER BY s.id DESC";
 
-    try (Connection conn = DBConnectionManager.getConnection();
-         PreparedStatement stmt = conn.prepareStatement(sql);
-         ResultSet rs = stmt.executeQuery()) {
+        try (Connection conn = DBConnectionManager.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
 
-        while (rs.next()) {
-            Subscription s = new Subscription();
-            s.setId(rs.getInt("id"));
-            s.setCustomerId(rs.getInt("customer_id"));
-            s.setServiceId(rs.getInt("service_id"));
-            s.setCustomerName(rs.getString("customer_name"));
-            s.setServiceName(rs.getString("service_name"));
+            while (rs.next()) {
+                Subscription s = new Subscription();
 
-            s.setPurchaseDate(rs.getTimestamp("purchase_date"));
-            s.setExpiryDate(rs.getTimestamp("expiry_date"));
-            s.setStatus(rs.getString("status"));
+                s.setId(rs.getInt("id"));
+                s.setCustomerId(rs.getInt("customer_id"));
+                s.setServiceId(rs.getInt("service_id"));
 
-            list.add(s);
+                s.setCustomerName(rs.getString("customer_name"));
+                s.setServiceName(rs.getString("service_name"));
+
+                Timestamp purchase = rs.getTimestamp("purchase_date");
+                Timestamp expiry = rs.getTimestamp("expiry_date");
+
+                s.setPurchaseDate(purchase != null ? new Date(purchase.getTime()) : null);
+                s.setExpiryDate(expiry != null ? new Date(expiry.getTime()) : null);
+
+                s.setStatus(rs.getString("status"));
+
+                list.add(s);
+            }
+
+        } catch (SQLException e) {
+            System.err.println("ERROR getAllSubscriptions: " + e.getMessage());
         }
 
-    } catch (SQLException e) {
-        System.err.println("❌ ERROR getAllSubscriptions: " + e.getMessage());
+        return list;
     }
-
-    System.out.println("DEBUG: DAO returned " + list.size() + " subscriptions");
-
-    return list;
-}
 
 
     // =====================================================
     // GET SUBSCRIPTION BY ID
     // =====================================================
     public Subscription getSubscriptionById(int id) {
-        String sql =
-                "SELECT s.*, srv.name AS service_name, srv.price AS service_price " +
-                "FROM subscriptions s " +
-                "JOIN services srv ON s.service_id = srv.id " +
-                "WHERE s.id = ?";
+        String sql = "SELECT s.*, srv.name AS service_name, srv.price AS service_price "
+                + "FROM subscriptions s "
+                + "JOIN services srv ON s.service_id = srv.id "
+                + "WHERE s.id = ?";
 
         try (Connection conn = DBConnectionManager.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -287,11 +317,15 @@ public List<Subscription> getActiveSubscriptionsByCustomer(int customerId) {
                 s.setId(rs.getInt("id"));
                 s.setCustomerId(rs.getInt("customer_id"));
                 s.setServiceId(rs.getInt("service_id"));
+
                 s.setServiceName(rs.getString("service_name"));
                 s.setMonthlyPrice(rs.getDouble("service_price"));
 
-                s.setPurchaseDate(rs.getTimestamp("purchase_date"));
-                s.setExpiryDate(rs.getTimestamp("expiry_date"));
+                Timestamp purchase = rs.getTimestamp("purchase_date");
+                Timestamp expiry = rs.getTimestamp("expiry_date");
+
+                s.setPurchaseDate(purchase != null ? new Date(purchase.getTime()) : null);
+                s.setExpiryDate(expiry != null ? new Date(expiry.getTime()) : null);
                 s.setStatus(rs.getString("status"));
 
                 return s;
@@ -304,17 +338,17 @@ public List<Subscription> getActiveSubscriptionsByCustomer(int customerId) {
         return null;
     }
 
+
     // =====================================================
-    // GET ACTIVE SUBSCRIPTIONS (FOR BILLING SCHEDULER)
+    // GET ALL ACTIVE SUBSCRIPTIONS (BILLING)
     // =====================================================
     public List<Subscription> getActiveSubscriptions() {
         List<Subscription> list = new ArrayList<>();
 
-        String sql =
-                "SELECT s.*, srv.price AS service_price " +
-                "FROM subscriptions s " +
-                "JOIN services srv ON s.service_id = srv.id " +
-                "WHERE s.status = 'ACTIVE'";
+        String sql = "SELECT s.*, srv.price AS service_price "
+                + "FROM subscriptions s "
+                + "JOIN services srv ON s.service_id = srv.id "
+                + "WHERE s.status = 'ACTIVE'";
 
         try (Connection conn = DBConnectionManager.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql);
@@ -326,10 +360,14 @@ public List<Subscription> getActiveSubscriptionsByCustomer(int customerId) {
                 s.setId(rs.getInt("id"));
                 s.setCustomerId(rs.getInt("customer_id"));
                 s.setServiceId(rs.getInt("service_id"));
+
                 s.setMonthlyPrice(rs.getDouble("service_price"));
 
-                s.setPurchaseDate(rs.getTimestamp("purchase_date"));
-                s.setExpiryDate(rs.getTimestamp("expiry_date"));
+                Timestamp purchase = rs.getTimestamp("purchase_date");
+                Timestamp expiry = rs.getTimestamp("expiry_date");
+
+                s.setPurchaseDate(purchase != null ? new Date(purchase.getTime()) : null);
+                s.setExpiryDate(expiry != null ? new Date(expiry.getTime()) : null);
                 s.setStatus(rs.getString("status"));
 
                 list.add(s);
@@ -342,8 +380,9 @@ public List<Subscription> getActiveSubscriptionsByCustomer(int customerId) {
         return list;
     }
 
+
     // =====================================================
-    // OWN SUBSCRIPTION CHECK
+    // CHECK IF SUBSCRIPTION BELONGS TO CUSTOMER
     // =====================================================
     public boolean customerOwnsSubscription(int customerId, int subscriptionId) {
         String sql = "SELECT id FROM subscriptions WHERE id = ? AND customer_id = ?";
@@ -363,8 +402,9 @@ public List<Subscription> getActiveSubscriptionsByCustomer(int customerId) {
         return false;
     }
 
+
     // =====================================================
-    // ADD SUBSCRIPTION (SHORT FORM)
+    // SHORT-FORM ADD SUBSCRIPTION
     // =====================================================
     public boolean addSubscription(int customerId, int serviceId, Date purchaseDate, Date expiryDate) {
         Subscription s = new Subscription();
@@ -375,5 +415,4 @@ public List<Subscription> getActiveSubscriptionsByCustomer(int customerId) {
         s.setStatus("ACTIVE");
         return addSubscription(s);
     }
-
 }

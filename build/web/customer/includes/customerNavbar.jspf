@@ -1,31 +1,48 @@
 <%@ page import="java.util.*" %>
 
-<!-- Customer Navbar -->
-<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-    <div class="container-fluid">
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
+    <div class="container-fluid px-3">
 
-        <a class="navbar-brand" href="home.jsp">Telecom </a>
+        <!-- Brand -->
+        <a class="navbar-brand fw-bold" href="home.jsp">Telecom</a>
 
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
-                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <!-- Mobile Toggle Button -->
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                data-bs-target="#navbarNav" aria-controls="navbarNav"
+                aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
 
+        <!-- Navbar Items -->
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ms-auto">
+
                 <li class="nav-item">
-                    <a class="nav-link" href="home.jsp">Home</a>
+                    <a class="nav-link ${pageName == 'home' ? 'active' : ''}" href="home.jsp">Home</a>
                 </li>
+
                 <li class="nav-item">
-                    <a class="nav-link" href="subscriptions.jsp">Subscription</a>
+                    <a class="nav-link ${pageName == 'services' ? 'active' : ''}" href="services.jsp">Services</a>
                 </li>
+
                 <li class="nav-item">
-                    <a class="nav-link" href="billingHistory.jsp">Billing</a>
+                    <a class="nav-link ${pageName == 'subscriptions' ? 'active' : ''}" href="subscriptions.jsp">Subscription</a>
                 </li>
+
                 <li class="nav-item">
-                    <a class="nav-link" href="../logout">Logout</a>
+                    <a class="nav-link ${pageName == 'billing' ? 'active' : ''}" href="billing.jsp">Billing</a>
                 </li>
+
+                <li class="nav-item">
+                    <a class="nav-link ${pageName == 'reports' ? 'active' : ''}" href="reports.jsp">Report</a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link text-warning fw-semibold" href="../logout">Logout</a>
+                </li>
+
             </ul>
         </div>
+
     </div>
 </nav>

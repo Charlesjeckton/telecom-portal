@@ -19,14 +19,14 @@ public class RoleFilter implements Filter {
         HttpSession session = req.getSession(false);
 
         // ================================
-        //       PUBLICLY ACCESSIBLE
+        //       PUBLIC PAGES (NO LOGIN)
         // ================================
         if (
                 path.endsWith("login.jsp") ||
                 path.endsWith("/login") ||
 
-                path.endsWith("registerCustomer.jsp") ||
-                path.endsWith("/register") ||
+                path.endsWith("registerCustomer.jsp") ||     // JSP form
+                path.endsWith("/registerCustomer") ||        // Servlet mapping
 
                 path.contains("/assets/") ||
                 path.contains("/css/") ||
@@ -38,7 +38,7 @@ public class RoleFilter implements Filter {
         }
 
         // ================================
-        //       SESSION VALIDATION
+        //       REQUIRE LOGIN
         // ================================
         if (session == null || session.getAttribute("username") == null) {
             res.sendRedirect(req.getContextPath() + "/login.jsp");
@@ -48,24 +48,22 @@ public class RoleFilter implements Filter {
         String role = (String) session.getAttribute("role");
 
         // ================================
-        //       ROLE RESTRICTIONS
+        //         ROLE BLOCKING
         // ================================
-        // Admin-only pages
         if (path.contains("/admin/") && !"ADMIN".equals(role)) {
             res.sendRedirect(req.getContextPath() + "/accessDenied.jsp");
             return;
         }
 
-        // Customer-only pages
         if (path.contains("/customer/") &&
-                !"CUSTOMER".equals(role) &&
-                !"ADMIN".equals(role)) {
+            !"CUSTOMER".equals(role) &&
+            !"ADMIN".equals(role)) {
             res.sendRedirect(req.getContextPath() + "/accessDenied.jsp");
             return;
         }
 
         // ================================
-        //  PREVENT BACK BUTTON AFTER LOGOUT
+        //  PREVENT BACK AFTER LOGOUT
         // ================================
         res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
         res.setHeader("Pragma", "no-cache");

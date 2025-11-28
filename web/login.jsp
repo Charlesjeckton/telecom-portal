@@ -2,184 +2,163 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html>
-<head>
-    <title>Login</title>
+    <head>
+        <title>Login</title>
 
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/primeicons@5.0.0/primeicons.css" />
+        <!-- Bootstrap -->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 
-    <style>
-        body {
-            margin: 0;
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background: linear-gradient(135deg, #4e2fbf, #1a94e8);
-            font-family: "Poppins", sans-serif;
-        }
+        <!-- PrimeIcons -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/primeicons@5.0.0/primeicons.css" />
 
-        /* Fade-in animation */
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(25px); }
-            to   { opacity: 1; transform: translateY(0);   }
-        }
+        <style>
+            body {
+                margin: 0;
+                min-height: 100vh;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                background: linear-gradient(135deg, #4e2fbf, #1a94e8);
+                font-family: "Poppins", sans-serif;
+                padding: 20px; /* Better mobile spacing */
+            }
 
-        /* LOGIN CARD */
-        .login-wrapper {
-            width: 380px;
-            padding: 45px 40px;
-            border-radius: 20px;
-            background: #ffffff;
-            box-shadow: 0 18px 40px rgba(0,0,0,0.25);
-            animation: fadeIn 0.7s ease-out;
-            text-align: center;
-        }
+            @keyframes fadeIn {
+                from {
+                    opacity: 0;
+                    transform: translateY(25px);
+                }
+                to   {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
 
-        .login-title {
-            font-size: 30px;
-            font-weight: 700;
-            margin-bottom: 28px;
-            color: #2c2c2c;
-        }
+            /* Bigger card */
+            .login-wrapper {
+                width: 100%;
+                max-width: 460px; /* Increased from 400px */
+                padding: 40px 32px; /* Slightly bigger inside spacing */
+                border-radius: 22px;
+                background: #ffffff;
+                box-shadow: 0 20px 45px rgba(0,0,0,0.28);
+                animation: fadeIn 0.7s ease-out;
+            }
 
-        /* INPUT FIELD GROUP */
-        .input-group {
-            position: relative;
-            width: 100%;
-            margin-bottom: 28px;
-        }
+            .input-group-text {
+                background: #f3f3f3;
+                border-right: none;
+                font-size: 1.1rem;
+            }
 
-        /* Left icon (user / lock) */
-        .input-group i.input-icon {
-            position: absolute;
-            top: 50%;
-            left: 14px;
-            transform: translateY(-50%);
-            color: #555;
-            font-size: 18px;
-        }
+            .form-control {
+                border-left: none;
+                background: #f3f3f3;
+                padding: 12px 14px;
+                font-size: 1.05rem;
+            }
 
-        /* Input field */
-        .input-group input {
-            width: 100%;
-            padding: 15px 55px 15px 45px; /* 45px left icon, 55px right icon */
-            border-radius: 12px;
-            border: 1px solid #ccc;
-            background: #f3f3f3;
-            font-size: 16px;
-            box-sizing: border-box;
-            transition: all 0.25s ease;
-        }
+            .form-control:focus {
+                background: #fff;
+                border-color: #1a94e8;
+                box-shadow: 0 0 5px rgba(26,148,232,0.4);
+            }
 
-        .input-group input:focus {
-            border-color: #1a94e8;
-            background: #fff;
-            box-shadow: 0 0 4px rgba(26,148,232,0.4);
-            outline: none;
-        }
+            button {
+                background: linear-gradient(135deg, #1a94e8, #6b1fc7);
+                border: none;
+                padding: 14px;
+                font-size: 1.1rem;
+                border-radius: 12px;
+            }
 
-        /* Eye icon (Password toggle) */
-        .toggle-password {
-            position: absolute;
-            right: 15px;   /* far end */
-            top: 50%;
-            transform: translateY(-50%);
-            font-size: 18px;
-            cursor: pointer;
-            color: #555;
-        }
+            button:hover {
+                opacity: 0.92;
+            }
 
-        /* BUTTON */
-        button {
-            width: 100%;
-            padding: 14px;
-            border: none;
-            border-radius: 12px;
-            background: linear-gradient(135deg, #1a94e8, #6b1fc7);
-            font-size: 17px;
-            font-weight: 600;
-            color: #fff;
-            cursor: pointer;
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-        }
+            .toggle-password {
+                cursor: pointer;
+            }
 
-        button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.25);
-        }
+            /* Redesigned Register link */
+            .register-box {
+                margin-top: 18px;
+                background: #f5f9ff;
+                padding: 12px;
+                border-radius: 12px;
+                font-size: 0.95rem;
+                border: 1px solid #e0e7ff;
+            }
 
-        /* ERROR ALERT */
-        .alert {
-            margin-bottom: 20px;
-            padding: 13px;
-            border-radius: 10px;
-            font-weight: 600;
-            text-align: left;
-        }
+            .register-box a {
+                font-weight: 600;
+                color: #1a94e8;
+                text-decoration: none;
+            }
 
-        .alert-danger {
-            background: #ffe0e0;
-            color: #b10000;
-            border-left: 5px solid #d00000;
-        }
+            .register-box a:hover {
+                text-decoration: underline;
+            }
+        </style>
 
-        /* FOOTER SMALL TEXT */
-        .footer-note {
-            margin-top: 22px;
-            color: #666;
-            font-size: 14px;
-        }
-    </style>
-</head>
+    </head>
 
-<body>
+    <body>
 
-<div class="login-wrapper">
+        <div class="login-wrapper">
 
-    <div class="login-title">Telecom System Login</div>
+            <h3 class="text-center fw-bold mb-4">Telecom System Login</h3>
 
-    <!-- Display login error -->
-    <c:if test="${not empty error}">
-        <div class="alert alert-danger">
-            <i class="pi pi-exclamation-triangle"></i> ${error}
-        </div>
-    </c:if>
+            <!-- Login error -->
+            <c:if test="${not empty error}">
+                <div class="alert alert-danger d-flex align-items-center">
+                    <i class="pi pi-exclamation-triangle me-2"></i> ${error}
+                </div>
+            </c:if>
 
-    <form action="login" method="post">
+            <form action="login" method="post">
 
-        <!-- Username -->
-        <div class="input-group">
-            <i class="pi pi-user input-icon"></i>
-            <input type="text" name="username" placeholder="Enter username" required minlength="3">
+                <!-- Username -->
+                <div class="input-group mb-3">
+                    <span class="input-group-text"><i class="pi pi-user"></i></span>
+                    <input type="text" name="username" class="form-control" placeholder="Enter username" required minlength="3">
+                </div>
+
+                <!-- Password -->
+                <div class="input-group mb-3">
+                    <span class="input-group-text"><i class="pi pi-lock"></i></span>
+                    <input type="password" id="password" name="password" class="form-control" placeholder="Enter password" required minlength="4">
+                    <span class="input-group-text toggle-password" onclick="togglePassword()">
+                        <i class="pi pi-eye"></i>
+                    </span>
+                </div>
+
+                <button type="submit" class="btn btn-primary w-100">
+                    <i class="pi pi-sign-in"></i> Login
+                </button>
+            </form>
+
+            <div class="register-box text-center">
+                Don't have an account?
+                <a href="registerCustomer.jsp">Create an account</a>
+            </div>
+
+
+            <p class="text-center text-muted mt-2 mb-0" style="font-size: 13px;">
+                © 2025 Telecom Management System
+            </p>
+
         </div>
 
-        <!-- Password -->
-        <div class="input-group">
-            <i class="pi pi-lock input-icon"></i>
-            <input type="password" id="password" name="password" placeholder="Enter password" required minlength="4">
-            <i class="pi pi-eye toggle-password" onclick="togglePassword()"></i>
-        </div>
+        <script>
+            function togglePassword() {
+                const pw = document.getElementById("password");
+                pw.type = pw.type === "password" ? "text" : "password";
+            }
+        </script>
 
-        <button type="submit">
-            <i class="pi pi-sign-in"></i> Login
-        </button>
-    </form>
+        <!-- Bootstrap JS -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
-    
-    <div class="footer-note">
-        <a href="registerCustomer.jsp">Register as a customer</a>
-    </div>
-    <div class="footer-note">
-        © 2025 Telecom Management System
-    </div>
-</div>
-
-<script>
-    function togglePassword() {
-        const pw = document.getElementById("password");
-        pw.type = pw.type === "password" ? "text" : "password";
-    }
-</script>
-
-</body>
+    </body>
 </html>

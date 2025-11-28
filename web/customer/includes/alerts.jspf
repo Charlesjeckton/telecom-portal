@@ -1,0 +1,37 @@
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+
+<!-- SERVLET MESSAGE (request scope) -->
+<c:if test="${not empty message}">
+    
+    <c:choose>
+        <c:when test="${messageType eq 'success'}">
+            <c:set var="alertType" value="success" />
+            <c:set var="alertTitle" value="Success:" />
+        </c:when>
+        <c:otherwise>
+            <c:set var="alertType" value="danger" />
+            <c:set var="alertTitle" value="Error:" />
+        </c:otherwise>
+    </c:choose>
+
+    <div class="alert alert-${alertType} alert-dismissible fade show">
+        <strong>${alertTitle}</strong> ${message}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+</c:if>
+
+<!-- REDIRECT SUCCESS (?success=...) -->
+<c:if test="${not empty param.success}">
+    <div class="alert alert-success alert-dismissible fade show">
+        <strong>Success:</strong> ${param.success}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+</c:if>
+
+<!-- REDIRECT ERROR (?error=...) -->
+<c:if test="${not empty param.error}">
+    <div class="alert alert-danger alert-dismissible fade show">
+        <strong>Error:</strong> ${param.error}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+</c:if>
