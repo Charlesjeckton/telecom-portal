@@ -18,71 +18,86 @@
 
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <%@ include file="includes/customerTheme.jspf" %>
-        <title>Add Subscription</title>
-    </head>
-    <body>
+<head>
+    <%@ include file="includes/customerTheme.jspf" %>
+    <title>Add Subscription</title>
 
-        <%@ include file="includes/customerNavbar.jspf" %>
+    <style>
+        /* MOBILE-FRIENDLY PAGE WRAPPER */
+        .page-container {
+            max-width: 650px;
+            margin: 0 auto;
+            padding: 20px;
+        }
 
-        <div class="page-container">
+        @media (max-width: 576px) {
+            .page-container {
+                padding: 10px;
+            }
+        }
+    </style>
+</head>
 
-            <div class="card shadow-sm mx-auto" style="max-width: 500px; padding: 30px; border-radius: 12px;">
-                <h2 class="text-center mb-4">Add New Subscription</h2>
+<body>
 
-                <% if (error != null && !error.isEmpty()) {%>
-                <div class="alert alert-danger text-center"><%= error%></div>
-                <% } %>
+<%@ include file="includes/customerNavbar.jspf" %>
 
-                <form action="addSubscription" method="post">
+<div class="page-container">
 
-                    <!-- SERVICE SELECT -->
-                    <div class="mb-3">
-                        <label class="form-label">Select Service:</label>
-                        <select id="serviceSelect" name="service_id" class="form-select" required>
-                            <option value="">-- Select Service --</option>
-                            <% if (services != null) {
-                            for (Service s : services) {%>
+    <div class="card shadow-sm p-4" style="border-radius: 12px;">
+        <h2 class="text-center mb-4">Add New Subscription</h2>
+
+        <% if (error != null && !error.isEmpty()) { %>
+            <div class="alert alert-danger text-center"><%= error %></div>
+        <% } %>
+
+        <form action="addSubscription" method="post">
+
+            <!-- SERVICE SELECT -->
+            <div class="mb-3">
+                <label class="form-label">Select Service:</label>
+                <select id="serviceSelect" name="service_id" class="form-select" required>
+                    <option value="">-- Select Service --</option>
+                    <% if (services != null) {
+                        for (Service s : services) { %>
 
                             <option 
-                                value="<%= s.getId()%>"
-                                data-price="<%= s.getCharge()%>"
-                                data-durationvalue="<%= s.getDurationValue()%>"
-                                data-durationunit="<%= s.getDurationUnit()%>"
-                                >
-                                <%= s.getName()%>
+                                value="<%= s.getId() %>"
+                                data-price="<%= s.getCharge() %>"
+                                data-durationvalue="<%= s.getDurationValue() %>"
+                                data-durationunit="<%= s.getDurationUnit() %>">
+                                <%= s.getName() %>
                             </option>
 
-                            <%   }
-                        }%>
-                        </select>
-                    </div>
-
-                    <!-- SERVICE CHARGES (HIDDEN INITIALLY) -->
-                    <div id="chargesBox" class="mb-3" style="display:none;">
-                        <label class="form-label">Charges:</label>
-                        <input id="serviceCharge" type="text" class="form-control" readonly>
-                    </div>
-
-                    <!-- SERVICE DURATION (HIDDEN INITIALLY) -->
-                    <div id="durationBox" class="mb-3" style="display:none;">
-                        <label class="form-label">Duration:</label>
-                        <input id="serviceDuration" type="text" class="form-control" readonly>
-                    </div>
-
-
-                    <!-- Buttons -->
-                    <div class="d-flex justify-content-between mt-4">
-                        <button type="submit" class="btn btn-success w-50 me-2">Add Subscription</button>
-                        <a href="subscriptions.jsp" class="btn btn-secondary w-50 ms-2">Cancel</a>
-                    </div>
-
-                </form>
+                    <% } } %>
+                </select>
             </div>
 
-        </div>
-                        <script>
+            <!-- SERVICE CHARGES -->
+            <div id="chargesBox" class="mb-3" style="display:none;">
+                <label class="form-label">Charges:</label>
+                <input id="serviceCharge" type="text" class="form-control" readonly>
+            </div>
+
+            <!-- SERVICE DURATION -->
+            <div id="durationBox" class="mb-3" style="display:none;">
+                <label class="form-label">Duration:</label>
+                <input id="serviceDuration" type="text" class="form-control" readonly>
+            </div>
+
+            <!-- BUTTONS (FULLY RESPONSIVE) -->
+            <div class="d-flex flex-wrap gap-2 mt-4">
+                <button type="submit" class="btn btn-success flex-grow-1">Add Subscription</button>
+                <a href="subscriptions.jsp" class="btn btn-secondary flex-grow-1">Cancel</a>
+            </div>
+
+        </form>
+    </div>
+
+</div>
+
+
+<script>
 document.getElementById("serviceSelect").addEventListener("change", function () {
 
     const option = this.options[this.selectedIndex];
@@ -109,7 +124,5 @@ document.getElementById("serviceSelect").addEventListener("change", function () 
 });
 </script>
 
-
-       
-    </body>
+</body>
 </html>

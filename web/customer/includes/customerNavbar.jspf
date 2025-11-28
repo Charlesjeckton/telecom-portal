@@ -1,44 +1,93 @@
-<%@ page import="java.util.*" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+
+<%
+    // Helper: get request path (context path trimmed)
+    String full = request.getRequestURI(); // e.g. /TelecomCustomerPortal/customer/billing
+    String ctx = request.getContextPath(); // e.g. /TelecomCustomerPortal
+    String path = full != null && full.startsWith(ctx) ? full.substring(ctx.length()) : full;
+    request.setAttribute("__currentPath", path);
+%>
+
+<c:set var="currentPath" value="${requestScope.__currentPath}" />
 
 <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
     <div class="container-fluid px-3">
 
-        <!-- Brand -->
-        <a class="navbar-brand fw-bold" href="home.jsp">Telecom</a>
+        <a class="navbar-brand fw-bold" href="${pageContext.request.contextPath}/customer/home.jsp">
+            Telecom
+        </a>
 
-        <!-- Mobile Toggle Button -->
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                 data-bs-target="#navbarNav" aria-controls="navbarNav"
                 aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
 
-        <!-- Navbar Items -->
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ms-auto">
 
+                <!-- Home -->
                 <li class="nav-item">
-                    <a class="nav-link ${pageName == 'home' ? 'active' : ''}" href="home.jsp">Home</a>
+                    <a
+                        class="nav-link ${ (pageName != null and pageName == 'home') 
+                                            ? 'active' 
+                                            : (fn:contains(currentPath,'/customer/home.jsp') ? 'active' : '') }"
+                        href="${pageContext.request.contextPath}/customer/home.jsp">
+                        Home
+                    </a>
                 </li>
 
+                <!-- Services -->
                 <li class="nav-item">
-                    <a class="nav-link ${pageName == 'services' ? 'active' : ''}" href="services.jsp">Services</a>
+                    <a
+                        class="nav-link ${ (pageName != null and pageName == 'services') 
+                                            ? 'active' 
+                                            : (fn:contains(currentPath,'/customer/services.jsp') ? 'active' : '') }"
+                        href="${pageContext.request.contextPath}/customer/services.jsp">
+                        Services
+                    </a>
                 </li>
 
+                <!-- Subscriptions -->
                 <li class="nav-item">
-                    <a class="nav-link ${pageName == 'subscriptions' ? 'active' : ''}" href="subscriptions.jsp">Subscription</a>
+                    <a
+                        class="nav-link ${ (pageName != null and pageName == 'subscriptions') 
+                                            ? 'active' 
+                                            : (fn:contains(currentPath,'/customer/subscriptions.jsp') ? 'active' : '') }"
+                        href="${pageContext.request.contextPath}/customer/subscriptions.jsp">
+                        Subscription
+                    </a>
                 </li>
 
+                <!-- Billing -->
                 <li class="nav-item">
-                    <a class="nav-link ${pageName == 'billing' ? 'active' : ''}" href="billing.jsp">Billing</a>
+                    <a
+                        class="nav-link ${ (pageName != null and pageName == 'billing')
+                                            ? 'active'
+                                            : (fn:contains(currentPath,'/customer/billing') ? 'active' : '') }"
+                        href="${pageContext.request.contextPath}/customer/billing?tab=unpaid">
+                        Billing
+                    </a>
                 </li>
 
+                <!-- Reports -->
                 <li class="nav-item">
-                    <a class="nav-link ${pageName == 'reports' ? 'active' : ''}" href="reports.jsp">Report</a>
+                    <a
+                        class="nav-link ${ (pageName != null and pageName == 'reports')
+                                            ? 'active'
+                                            : (fn:contains(currentPath,'/customer/reports') ? 'active' : '') }"
+                        href="${pageContext.request.contextPath}/customer/reports.jsp">
+                        Report
+                    </a>
                 </li>
 
+                <!-- Logout (styled differently with .logout-btn) -->
                 <li class="nav-item">
-                    <a class="nav-link text-warning fw-semibold" href="../logout">Logout</a>
+                    <a class="nav-link logout-btn"
+                       href="${pageContext.request.contextPath}/logout">
+                        Logout
+                    </a>
                 </li>
 
             </ul>
