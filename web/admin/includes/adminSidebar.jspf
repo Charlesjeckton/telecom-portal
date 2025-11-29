@@ -1,3 +1,17 @@
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+
+<%
+    // Detect current request path (trim context path)
+    String full = request.getRequestURI();
+    String ctx = request.getContextPath();
+    String path = full != null && full.startsWith(ctx) ? full.substring(ctx.length()) : full;
+
+    request.setAttribute("__adminPath", path);
+%>
+
+<c:set var="adminPath" value="${requestScope.__adminPath}" />
+
 <!-- MOBILE TOGGLE BUTTON -->
 <button class="sidebar-toggle">
     <i class="bi bi-list"></i>
@@ -9,44 +23,73 @@
 
     <ul class="nav flex-column">
 
+        <!-- DASHBOARD -->
         <li class="nav-item">
-            <a class="nav-link ${page == 'dashboard' ? 'active' : ''}" href="../admin/dashboard.jsp">
+            <a class="nav-link 
+                ${page == 'dashboard' 
+                    ? 'active' 
+                    : (fn:contains(adminPath, '/admin/dashboard') ? 'active' : '')}"
+               href="../admin/dashboard.jsp">
                 <i class="bi bi-speedometer2"></i> Dashboard
             </a>
         </li>
 
+        <!-- CUSTOMERS -->
         <li class="nav-item">
-            <a class="nav-link ${page == 'customers' ? 'active' : ''}" href="../admin/customers.jsp">
+            <a class="nav-link
+                ${page == 'customers' 
+                    ? 'active'
+                    : (fn:contains(adminPath, '/admin/customers') ? 'active' : '')}"
+               href="../admin/customers.jsp">
                 <i class="bi bi-people"></i> Customers
             </a>
         </li>
 
+        <!-- SUBSCRIPTIONS -->
         <li class="nav-item">
-            <a class="nav-link ${page == 'subscriptions' ? 'active' : ''}" href="../admin/subscriptions.jsp">
+            <a class="nav-link
+                ${page == 'subscriptions' 
+                    ? 'active'
+                    : (fn:contains(adminPath, '/admin/subscriptions') ? 'active' : '')}"
+               href="../admin/subscriptions.jsp">
                 <i class="bi bi-card-list"></i> Subscriptions
             </a>
         </li>
 
+        <!-- SERVICES -->
         <li class="nav-item">
-            <a class="nav-link ${page == 'services' ? 'active' : ''}" href="../admin/services.jsp">
+            <a class="nav-link
+                ${page == 'services' 
+                    ? 'active'
+                    : (fn:contains(adminPath, '/admin/services') ? 'active' : '')}"
+               href="../admin/services.jsp">
                 <i class="bi bi-list-check"></i> Services
             </a>
         </li>
 
-        <!-- BILLING SINGLE PAGE -->
+        <!-- BILLING -->
         <li class="nav-item">
-            <a class="nav-link ${page == 'billing' ? 'active' : ''}" href="../admin/billing.jsp">
+            <a class="nav-link
+                ${page == 'billing' 
+                    ? 'active'
+                    : (fn:contains(adminPath, '/admin/billing') ? 'active' : '')}"
+               href="../admin/billing.jsp">
                 <i class="bi bi-cash-stack"></i> Billing
             </a>
         </li>
 
-
+        <!-- REPORTS -->
         <li class="nav-item">
-            <a class="nav-link ${page == 'reports' ? 'active' : ''}" href="../admin/reports.jsp">
+            <a class="nav-link
+                ${page == 'reports' 
+                    ? 'active'
+                    : (fn:contains(adminPath, '/admin/reports') ? 'active' : '')}"
+               href="../admin/reports.jsp">
                 <i class="bi bi-graph-up"></i> Reports
             </a>
         </li>
 
+        <!-- LOGOUT -->
         <li class="nav-item">
             <a class="nav-link text-danger" href="../logout">
                 <i class="bi bi-box-arrow-right"></i> Logout
@@ -55,5 +98,3 @@
 
     </ul>
 </div>
-
-

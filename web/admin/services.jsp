@@ -10,244 +10,242 @@
 
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <title>Service Management - Admin Panel</title>
+    <head>
+        <title>Service Management - Admin Panel</title>
 
-    <style>
-        /* ------------------------------ */
-        /* MAIN LAYOUT RESPONSIVENESS     */
-        /* ------------------------------ */
-
-        .main-content {
-            margin-left: 260px;
-            padding: 25px;
-            transition: 0.3s ease;
-        }
-
-        /* On tablets and mobile, remove sidebar spacing */
-        @media (max-width: 992px) {
+        <style>
             .main-content {
-                margin-left: 0 !important;
-                padding: 15px;
+                margin-left: 260px;
+                padding: 25px;
+                transition: 0.3s ease;
             }
-        }
-
-        /* ------------------------------ */
-        /* TABLE RESPONSIVENESS           */
-        /* ------------------------------ */
-
-        .table-responsive {
-            width: 100%;
-            overflow-x: auto;
-        }
-
-        /* Center the Actions column */
-        th.actions-col,
-        td.table-actions {
-            text-align: center !important;
-            vertical-align: middle !important;
-        }
-
-        /* ------------------------------ */
-        /* ACTION BUTTONS                 */
-        /* ------------------------------ */
-
-        .table-actions {
-            display: flex;
-            gap: 6px;
-            justify-content: center;
-            flex-wrap: wrap;  /* Buttons wrap on mobile */
-        }
-
-        .action-btn {
-            min-width: 70px;
-            max-width: 70px;
-            height: 35px;
-            font-size: 13px;
-            padding: 4px 6px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 500;
-        }
-
-        .toggle-btn {
-            min-width: 95px;
-        }
-
-        /* Even smaller UI on small phones */
-        @media (max-width: 576px) {
-            .action-btn {
-                min-width: 60px;
-                max-width: 60px;
-                height: 30px;
-                font-size: 12px;
-                padding: 3px 4px;
+            .page-wrapper {
+                max-width: 1200px;
+                width: 100%;
+                margin: 0 auto;
             }
+            @media (max-width: 768px) {
 
-            .toggle-btn {
-                min-width: 80px;
-            }
-        }
+                h2 {
+                    font-weight: 700;
+                    margin-top: 40px;
+                    margin-bottom: 6px;
+                }
+                @media (max-width: 992px) {
+                    .main-content {
+                        margin-left: 0 !important;
+                        padding: 15px;
+                    }
+                }
 
-    </style>
-</head>
+                .table-responsive {
+                    width: 100%;
+                    overflow-x: auto;
+                }
 
-<body>
+                td.table-actions, th.actions-col {
+                    text-align: center !important;
+                    vertical-align: middle !important;
+                }
 
-<div class="main-content">
+                .table-actions {
+                    display: flex;
+                    gap: 6px;
+                    justify-content: center;
+                    flex-wrap: wrap;
+                }
 
-    <!-- PAGE HEADER -->
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2 class="fw-bold mb-0">Service Management</h2>
+                .action-btn {
+                    min-width: 70px;
+                    height: 35px;
+                    font-size: 13px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                }
 
-        <!-- Add new service button (responsive) -->
-        <a href="addService.jsp" class="btn btn-primary action-btn">
-            + New
-        </a>
-    </div>
+                .toggle-btn {
+                    min-width: 95px;
+                }
 
-    <%@ include file="includes/alerts.jspf" %>
+                @media (max-width: 576px) {
+                    .action-btn {
+                        min-width: 60px;
+                        height: 30px;
+                        font-size: 12px;
+                    }
+                    .toggle-btn {
+                        min-width: 80px;
+                    }
+                }
+            </style>
 
-    <!-- AJAX ALERT AREA -->
-    <div id="ajax-msg"></div>
+        </head>
 
-    <!-- FETCH SERVICES -->
-    <%
-        ServiceDAO dao = new ServiceDAO();
-        List<Service> services = dao.getAllServices();
-    %>
+        <body>
 
-    <!-- TABLE AREA -->
-    <div class="card shadow-sm">
-        <div class="card-body">
+            <div class="main-content">
+                <div class="page-wrapper">
 
-            <div class="table-responsive">
-                <table class="table table-hover table-bordered align-middle">
-                    <thead class="table-dark">
-                        <tr>
-                            <th>Name</th>
-                            <th>Description</th>
-                            <th>Charges (KES)</th>
-                            <th>Duration</th>
-                            <th>Status</th>
-                            <th class="actions-col">Actions</th>
-                        </tr>
-                    </thead>
+                    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 px-2">
+                        <h2 class="fw-bold text-center text-md-start mb-3 mb-md-0">Services Management</h2>
 
-                    <tbody>
-                    <% if (services != null && !services.isEmpty()) { %>
-                        <% for (Service s : services) { %>
+                        <a href="addServices.jsp" 
+                           class="btn btn-primary w-100 w-md-auto" 
+                           style="max-width: 200px;">
+                            + Add New
+                        </a>
+                    </div>
 
-                        <tr id="row-<%= s.getId() %>">
+                    <%@ include file="includes/alerts.jspf" %>
+                    <div id="ajax-msg"></div>
 
-                            <td><%= s.getName() %></td>
-                            <td><%= s.getDescription() %></td>
-                            <td>KES <%= s.getCharge() %></td>
-                            <td><%= s.getDurationValue() %> <%= s.getDurationUnit() %></td>
+                    <%        ServiceDAO dao = new ServiceDAO();
+                        List<Service> services = dao.getAllServices();
+                    %>
 
-                            <td>
-                                <span id="status-<%= s.getId() %>"
-                                      class="badge bg-<%= s.isActive() ? "success" : "secondary" %>">
-                                    <%= s.isActive() ? "Active" : "Inactive" %>
-                                </span>
-                            </td>
+                    <div class="card shadow-sm">
+                        <div class="card-body">
 
-                            <td class="table-actions">
+                            <div class="table-responsive">
+                                <table class="table table-hover table-bordered align-middle">
+                                    <thead class="table-dark">
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Description</th>
+                                            <th>Charges (KES)</th>
+                                            <th>Duration</th>
+                                            <th>Status</th>
+                                            <th class="actions-col">Actions</th>
+                                        </tr>
+                                    </thead>
 
-                                <!-- TOGGLE BUTTON -->
-                                <button
-                                    class="btn btn-sm action-btn toggle-btn <%= s.isActive() ? "btn-secondary" : "btn-success" %>"
-                                    data-id="<%= s.getId() %>">
-                                    <%= s.isActive() ? "Deactivate" : "Activate" %>
-                                </button>
+                                    <tbody>
 
-                                <!-- EDIT BUTTON -->
-                                <a href="editService.jsp?id=<%= s.getId() %>"
-                                   class="btn btn-warning btn-sm action-btn">
-                                    Edit
-                                </a>
+                                        <% if (services != null && !services.isEmpty()) {
+                                                for (Service s : services) {
 
-                                <!-- DELETE BUTTON -->
-                                <form action="../admin/service" method="post" style="display:inline;">
-                                    <input type="hidden" name="action" value="delete">
-                                    <input type="hidden" name="id" value="<%= s.getId() %>">
+                                                    // ---- SAFE ID GENERATOR ----
+                                                    String safeId = String.valueOf(s.getId());
 
-                                    <button class="btn btn-danger btn-sm action-btn"
-                                            onclick="return confirm('Delete this service?');">
-                                        Delete
-                                    </button>
-                                </form>
-                            </td>
+                                                    if (safeId == null) {
+                                                        safeId = "";
+                                                    }
+                                                    safeId = safeId.trim();
 
-                        </tr>
+                                                    safeId = safeId.replaceAll("[^A-Za-z0-9]", "");
 
-                        <% } %>
-                    <% } else { %>
+                                                    // If ID is empty, fallback to unique ID
+                                                    if (safeId.isEmpty()) {
+                                                        safeId = "svc" + Math.abs(s.hashCode());
+                                                    }
+                                        %>
 
-                        <tr>
-                            <td colspan="6" class="text-center text-muted">No services found.</td>
-                        </tr>
+                                        <tr id="row-<%= safeId%>">
 
-                    <% } %>
-                    </tbody>
+                                            <td><%= s.getName()%></td>
+                                            <td><%= s.getDescription()%></td>
+                                            <td>KES <%= s.getCharge()%></td>
+                                            <td><%= s.getDurationValue()%> <%= s.getDurationUnit()%></td>
 
-                </table>
+                                            <td>
+                                                <span id="status-<%= safeId%>"
+                                                      class="badge bg-<%= s.isActive() ? "success" : "secondary"%>">
+                                                    <%= s.isActive() ? "Active" : "Inactive"%>
+                                                </span>
+                                            </td>
+
+                                            <td class="table-actions">
+
+                                                <button
+                                                    class="btn btn-sm action-btn toggle-btn <%= s.isActive() ? "btn-secondary" : "btn-success"%>"
+                                                    data-id="<%= safeId%>">
+                                                    <%= s.isActive() ? "Deactivate" : "Activate"%>
+                                                </button>
+
+                                                <a href="editService.jsp?id=<%= safeId%>"
+                                                   class="btn btn-warning btn-sm action-btn">
+                                                    Edit
+                                                </a>
+
+                                                <form action="../admin/service" method="post" style="display:inline;">
+                                                    <input type="hidden" name="action" value="delete">
+                                                    <input type="hidden" name="id" value="<%= safeId%>">
+
+                                                    <button class="btn btn-danger btn-sm action-btn"
+                                                            onclick="return confirm('Delete this service?');">
+                                                        Delete
+                                                    </button>
+                                                </form>
+                                            </td>
+
+                                        </tr>
+
+                                        <% } // end for
+                    } else { %>
+
+                                        <tr>
+                                            <td colspan="6" class="text-center text-muted">
+                                                No services found.
+                                            </td>
+                                        </tr>
+
+                                        <% }%>
+
+                                    </tbody>
+                                </table>
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
             </div>
 
-        </div>
-    </div>
+            <script>
+                function showAlert(msg, type = "success") {
+                    const alertBox = document.getElementById("ajax-msg");
+                    alertBox.innerHTML =
+                            '<div class="alert alert-' + type + ' alert-dismissible fade show mt-2">' +
+                            '<strong>' + (type === "success" ? "Success" : "Error") + ':</strong> ' + msg +
+                            '<button type="button" class="btn-close" data-bs-dismiss="alert"></button>' +
+                            '</div>';
+                }
+            </script>
 
-</div>
 
-<!-- ALERT FUNCTION -->
-<script>
-    function showAlert(msg, type = "success") {
-        const alertBox = document.getElementById("ajax-msg");
-        let prefix = (type === "success") ? "Success" : "Error";
+            <script>
+                document.querySelectorAll(".toggle-btn").forEach(button => {
+                    button.addEventListener("click", async function () {
 
-        alertBox.innerHTML =
-            '<div class="alert alert-' + type + ' alert-dismissible fade show mt-2">' +
-                '<strong>' + prefix + ':</strong> ' + msg +
-                '<button type="button" class="btn-close" data-bs-dismiss="alert"></button>' +
-            '</div>';
-    }
-</script>
+                        const id = this.dataset.id;
 
-<!-- AJAX TOGGLE SCRIPT -->
-<script>
-    document.querySelectorAll(".toggle-btn").forEach(button => {
-        button.addEventListener("click", async function () {
+                        const response = await fetch("<%= request.getContextPath()%>/admin/toggleService", {
+                            method: "POST",
+                            headers: {"Content-Type": "application/x-www-form-urlencoded"},
+                            body: "id=" + id
+                        });
 
-            const id = this.dataset.id;
+                        const data = await response.json();
 
-            const response = await fetch("<%= request.getContextPath() %>/admin/toggleService", {
-                method: "POST",
-                headers: {"Content-Type": "application/x-www-form-urlencoded"},
-                body: "id=" + id
-            });
+                        if (!data.success) {
+                            showAlert("Failed to update service.", "danger");
+                            return;
+                        }
 
-            const data = await response.json();
+                        const badge = document.getElementById("status-" + id);
 
-            if (!data.success) {
-                showAlert("Failed to update service.", "danger");
-                return;
-            }
+                        badge.innerText = data.active ? "Active" : "Inactive";
+                        badge.className = "badge bg-" + (data.active ? "success" : "secondary");
 
-            // Update badge
-            const badge = document.getElementById("status-" + id);
-            badge.innerText = data.active ? "Active" : "Inactive";
-            badge.className = "badge bg-" + (data.active ? "success" : "secondary");
+                        this.innerText = data.active ? "Deactivate" : "Activate";
+                        this.classList.toggle("btn-secondary", data.active);
+                        this.classList.toggle("btn-success", !data.active);
 
-            // Update button
-            this.innerText = data.active ? "Deactivate" : "Activate";
-            this.classList.toggle("btn-secondary", data.active);
-            this.classList.toggle("btn-success", !data.active);
+                        showAlert("Service status updated successfully!");
+                    });
+                });
+            </script>
 
-            showAlert("Service status updated successfully!");
-        });
-    });
-</script>
-
-</body>
-</html>
+        </body>
+    </html>

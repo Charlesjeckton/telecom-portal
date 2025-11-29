@@ -22,9 +22,37 @@
             box-shadow: 0 3px 10px rgba(0,0,0,0.1);
             margin-bottom: 30px;
         }
+
         .chart-title {
             font-weight: bold;
             margin-bottom: 15px;
+        }
+
+        @media (max-width: 768px) {
+
+        h2 {
+            font-weight: 700;
+            margin-top: 40px;
+            margin-bottom: 6px;
+        }
+    }
+
+        /* ================================
+           Make Charts Medium Size on Desktop
+           ================================ */
+        .chart-wrapper {
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        @media (min-width: 1200px) {
+            .chart-wrapper {
+                max-width: 800px;
+            }
+        }
+
+        canvas {
+            max-height: 350px !important;
         }
     </style>
 </head>
@@ -89,14 +117,18 @@
     <!-- ======================= PIE CHART ======================= -->
     <div class="chart-card">
         <h4 class="chart-title">Paid vs Unpaid Bills</h4>
-        <canvas id="pieChart"></canvas>
+        <div class="chart-wrapper">
+            <canvas id="pieChart"></canvas>
+        </div>
     </div>
 
 
     <!-- ======================= LINE CHART ======================= -->
     <div class="chart-card">
         <h4 class="chart-title">Monthly Billing Trend</h4>
-        <canvas id="lineChart"></canvas>
+        <div class="chart-wrapper">
+            <canvas id="lineChart"></canvas>
+        </div>
     </div>
 
 </div>

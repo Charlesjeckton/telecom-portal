@@ -2,11 +2,90 @@
 <%@ include file="includes/adminSidebar.jspf" %>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 
-
 <!DOCTYPE html>
 <html>
 <head>
     <title>Dashboard - Admin Panel</title>
+
+    <style>
+
+        /* PAGE CONTENT WRAPPER */
+        .content {
+            padding: 30px;
+        }
+
+        h2 {
+            font-weight: 700;
+            margin-bottom: 30px;
+        }
+
+        /* DASHBOARD CARDS (same layout, just modernized) */
+        .dashboard-card {
+            border-radius: 16px;
+            padding: 25px;
+            background: #ffffff;
+            border: 1px solid #e5e5e5;
+            transition: 0.25s ease-in-out;
+            height: 100%; /* ensures even height */
+        }
+
+        .dashboard-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+        }
+
+        .dashboard-card h5 {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+        }
+
+        .dashboard-card i {
+            font-size: 24px;
+            margin-right: 8px;
+            color: #0d6efd;
+        }
+
+        .dashboard-card p {
+            color: #666;
+            margin-bottom: 18px;
+        }
+
+        .btn-primary {
+            width: 100%;
+            padding: 10px;
+            border-radius: 10px;
+        }
+
+        /* RESPONSIVE FIX — keep same grid, better padding */
+        @media (max-width: 768px) {
+            .content {
+                padding: 20px;
+            }
+            h2 {
+            font-weight: 700;
+            margin-top: 40px;
+            margin-bottom: 6px;
+        }
+
+            .dashboard-card {
+                padding: 20px;
+            }
+
+            .dashboard-card h5 {
+                font-size: 18px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            h2 {
+                font-size: 22px;
+            }
+        }
+
+    </style>
 </head>
 <body>
 
@@ -14,6 +93,7 @@
     <h2>Welcome Admin 👋</h2>
 
     <div class="row">
+
         <div class="col-md-4 mb-4">
             <div class="card dashboard-card shadow-sm">
                 <div class="card-body">
@@ -53,6 +133,7 @@
                 </div>
             </div>
         </div>
+
         <div class="col-md-4 mb-4">
             <div class="card dashboard-card shadow-sm">
                 <div class="card-body">
